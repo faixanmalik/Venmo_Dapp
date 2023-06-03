@@ -8,6 +8,13 @@ const { ethereum } = window;
 export const TransactionProvider = ({ children }) => {
 
     const [currentAccount, setCurrentAccount] = useState('')
+    const [addressTo, setAddressTo] = useState('')
+    const [amount, setAmount] = useState(0)
+    const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [transactionCount, setTransactionCount] = useState(
+        localStorage.getItem('transactionCount'),
+    )
 
     useEffect(() => {
         checkIfWalletIsConnect()
@@ -45,6 +52,28 @@ export const TransactionProvider = ({ children }) => {
                 else{
                     console.log('no accounts found!')
                 }
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // pending function
+    const createEthereumContract = async ()=>{
+        const provider = new ethers.providers
+    }
+
+    // pending function
+    const checkIfTransactionsExist = async ()=>{
+        try {
+            if(ethereum){
+                const transactionCount = createEthereumContract()
+
+
+            }
+            else{
+
             }
             
         } catch (error) {
