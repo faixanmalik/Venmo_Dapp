@@ -1,12 +1,25 @@
 import { CurrencyDollarIcon, SwitchVerticalIcon } from '@heroicons/react/outline'
 import styles from '../../styles/Transaction.module.css'
+import { TransactionContext } from '../../context/context'
+import { useContext } from 'react'
 
 function TransactionForm() {
+
+  const {sendTransaction, addressTo, amount, setAmount, message, setMessage, setAddressTo} = useContext(TransactionContext)
+
+  const submit = async(e)=>{
+    e.preventDefault()
+
+    if(! addressTo || !amount || !message ) return
+    sendTransaction()
+  }
+
+
   return <>
      <div className={styles.container}>
       <h3 className={styles.formTitle}>Send Payment / Request</h3>
 
-      <form>
+      <form onSubmit={submit}>
         <div className={styles.formContainer}>
           <div className={styles.swapContainer}>
             <SwitchVerticalIcon className={styles.swapIcon} />
@@ -20,7 +33,9 @@ function TransactionForm() {
                 className={styles.formInput}
                 type="text"
                 name="addressTo"
-              />
+                value={addressTo}
+                onChange={e=> setAddressTo(e.target.value)}
+                />
             </div>
             <div className={styles.formInputContainer}>
               <h4 className={styles.formInputTitle}>Message</h4>
@@ -28,7 +43,9 @@ function TransactionForm() {
                 className={styles.formInput}
                 type="text"
                 name="message"
-              />
+                value={message}
+                onChange={e=> setMessage(e.target.value)}
+                />
             </div>
           </div>
 
@@ -43,6 +60,8 @@ function TransactionForm() {
                     className={styles.amountInput}
                     type="number"
                     name="amount"
+                    value={amount}
+                    onChange={e=> setAmount(e.target.value)}
                   />
                 </div>
               </div>
