@@ -2,15 +2,9 @@ import { useContext } from 'react';
 import { TransactionContext } from '../context/context';
 import styles from '../styles/Navbar.module.css'
 import { ChevronDownIcon } from '@heroicons/react/outline'
+import { shortenAddress } from '../utils/shortenAddress';
 
 const Navbar = () => {
-
-  const shortenAddress = (address) =>{
-    const first = address.slice(0,5)
-    const last = address.slice(address.length-4)
-
-    return `${first}...${last}`;
-  }
 
   const {connectWallet, currentAccount} = useContext(TransactionContext);
 

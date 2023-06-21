@@ -56,6 +56,7 @@
   padding: 2rem;
   gap: 1.5rem;
   border-top: 1px solid hsl(224deg 8% 95%);
+  background-color: white;
 }
 
 .feedDetails {

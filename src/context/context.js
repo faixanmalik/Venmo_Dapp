@@ -2,6 +2,14 @@ import { useState, useEffect, createContext } from "react";
 import { ethers } from 'ethers'
 import { contractAddress, contractAbi } from "../utils/constants";
 
+// time ago is for 1 min ago 10 min ago
+import TimeAgo from "javascript-time-ago";
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en)
+const timeAgo = new TimeAgo('en-US')
+
+
+
 export const TransactionContext = createContext();
 
 const { ethereum } = window;
@@ -26,6 +34,7 @@ export const TransactionProvider = ({ children }) => {
     const [amount, setAmount] = useState(0)
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
+    const [transactions, setTransactions] = useState([])
     const [transactionCount, setTransactionCount] = useState(
         localStorage.getItem('transactionCount'),
     )
@@ -36,6 +45,7 @@ export const TransactionProvider = ({ children }) => {
         checkIfTransactionsExist()
 
     }, [transactionCount])
+    
 
 
     const checkIfWalletIsConnect = async () => {
@@ -46,6 +56,7 @@ export const TransactionProvider = ({ children }) => {
     
           if (accounts.length) {
             setCurrentAccount(accounts[0])
+            getAllTransactions()
           } else {
             console.log('No accounts found')
           }
@@ -126,12 +137,40 @@ export const TransactionProvider = ({ children }) => {
         }
     }
 
+    const getAllTransactions = async ()=>{
+        try {
+            if(ethereum){
+                const transactionContract = await createEthereumContract();
+                const availableTransactions = await transactionContract.getTransaction();
+
+                const structuredTransactions = availableTransactions.map((item)=>{
+                    return {
+                        addressTo: item.receiver,
+                        addressFrom: item.sender,
+                        timestamp: timeAgo.format(
+                            new Date(item.timestamp.toNumber() * 1000), 'mini'
+                        ),
+                        message: item.message,
+                        amount: parseInt(item.amount._hex) / 10 ** 18,
+                    }
+                })
+                setTransactions(structuredTransactions)
+            }
+            else{
+                console.log('no ethereum object')
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
 
 
 
     return  (
-        <TransactionContext.Provider value={{connectWallet, currentAccount, sendTransaction, setAddressTo, addressTo, amount, setAmount, message, setMessage }}>
+        <TransactionContext.Provider value={{connectWallet, currentAccount, sendTransaction, setAddressTo, addressTo, amount, setAmount, message, setMessage, transactions }}>
             {children }
         </TransactionContext.Provider>
     )
