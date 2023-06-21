@@ -6,7 +6,7 @@ import { shortenAddress } from '../../utils/shortenAddress'
 
 function ActivityCard() {
 
-  const { transactions, currentAccount } = useContext(TransactionContext)
+  const { transactions } = useContext(TransactionContext)
 
   const generateRendomAvatar = ()=>{
     const randomAvatar = Math.floor(Math.random() * 1000 )
